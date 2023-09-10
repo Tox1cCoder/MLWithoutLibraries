@@ -1,7 +1,7 @@
 const features = {};
 
 features.getPathCount = (paths) => {
-    return pathss.length;
+    return paths.length;
 }
 
 features.getPointCount = (paths) => {
@@ -9,6 +9,6 @@ features.getPointCount = (paths) => {
     return points.length;
 }
 
-if (typeof module !== "undefined") {
+if (typeof module !== 'undefined') {
     module.exports = features;
 }

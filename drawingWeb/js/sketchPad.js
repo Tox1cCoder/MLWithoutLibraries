@@ -4,9 +4,9 @@ class SketchPad {
         this.canvas.width = size;
         this.canvas.height = size;
         this.canvas.style = `
-            background-color: white;
-            box-shadow: 0px 0px 10px 2px black;
-        `;
+          background-color:white;
+          box-shadow: 0px 0px 10px 2px black;
+       `;
         container.appendChild(this.canvas);
 
         const lineBreak = document.createElement("br");
@@ -35,7 +35,6 @@ class SketchPad {
             this.paths.push([mouse]);
             this.isDrawing = true;
         }
-
         this.canvas.onmousemove = (evt) => {
             if (this.isDrawing) {
                 const mouse = this.#getMouse(evt);
@@ -44,8 +43,7 @@ class SketchPad {
                 this.#redraw();
             }
         }
-
-        document.onmouseup = (evt) => {
+        document.onmouseup = () => {
             this.isDrawing = false;
         }
         this.canvas.ontouchstart = (evt) => {
@@ -56,11 +54,10 @@ class SketchPad {
             const loc = evt.touches[0];
             this.canvas.onmousemove(loc);
         }
-        document.ontouchend = (evt) => {
-            const loc = evt.touches[0];
-            this.canvas.onmouseup(loc);
+        document.ontouchend = () => {
+            document.onmouseup();
         }
-        this.undoBtn.onclick = (evt) => {
+        this.undoBtn.onclick = () => {
             this.paths.pop();
             this.#redraw();
         }
@@ -72,8 +69,7 @@ class SketchPad {
         draw.paths(this.ctx, this.paths);
         if (this.paths.length > 0) {
             this.undoBtn.disabled = false;
-        }
-        else {
+        } else {
             this.undoBtn.disabled = true;
         }
     }

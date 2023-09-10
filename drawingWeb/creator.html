@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" lang="en">
+<html>
 
 <head>
-    <meta name="viewport" content="width=device-width, maximum-scale=0.9, user-scalable=0">
+    <meta name="viewport" content="width=device-width,
+         maximum-scale=0.9,user-scalable=0">
     <meta charset="UTF-8">
     <title>Data Creator</title>
     <link rel="stylesheet" href="styles.css" />
@@ -12,27 +13,32 @@
     <div id="content">
         <h1>Data Creator</h1>
         <div>
-            <input id="student" type="text" placeholder="Type your name" />
+            <input id="student" type="text" placeholder="type your name" />
             <span id="instructions"></span>
-            <button id="advanceBtn" onclick="start();">START</button>
+            <button id="advanceBtn" onclick="start();">
+                START
+            </button>
         </div>
-        <br />
-        <div id="sketchPadContainer" style="visibility: hidden;">
+        <br>
+        <div id="sketchPadContainer" style="visibility:hidden;">
         </div>
     </div>
-    <script src="js/sketchPad.js"></script>
     <script src="../common/draw.js"></script>
+    <script src="js/sketchPad.js"></script>
 
     <script>
         let index = 0;
-        const labels = ["car", "fish", "house", "tree", "bicycle", "guitar", "pencil", "clock"];
+        const labels = ["car", "fish", "house", "tree",
+            "bicycle", "guitar", "pencil", "clock"];
+
         const data = {
             student: null,
             session: new Date().getTime(),
             drawings: {}
         };
 
-        const sketchPad = new SketchPad(sketchPadContainer);
+        const sketchPad =
+            new SketchPad(sketchPadContainer);
 
         function start() {
             if (student.value == "") {
@@ -50,24 +56,23 @@
 
         function next() {
             if (sketchPad.paths.length == 0) {
-                alert("Please draw something first!");
+                alert("Draw something first!");
                 return;
             }
+
             const label = labels[index];
             data.drawings[label] = sketchPad.paths;
             sketchPad.reset();
             index++;
-            if (indext < labels.length) {
+            if (index < labels.length) {
                 const nextLabel = labels[index];
                 instructions.innerHTML = "Please draw a " + nextLabel;
-            }
-            else {
+            } else {
                 sketchPadContainer.style.visibility = "hidden";
                 instructions.innerHTML = "Thank you!";
                 advanceBtn.innerHTML = "SAVE";
                 advanceBtn.onclick = save;
             }
-
         }
 
         function save() {
