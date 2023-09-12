@@ -37,15 +37,15 @@ button:disabled:hover {
     align-items: center;
 }
 
-.thumb {
-    width: 100%;
-}
-
 .rowLabel {
     flex: 2 1 0;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.thumb {
+    width: 100%;
 }
 
 .sampleContainer {
