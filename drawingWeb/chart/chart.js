@@ -408,7 +408,7 @@ class Chart {
                         text: this.styles[label].text,
                         loc: pixelLoc,
                         size: 20
-                    })
+                    });
                     break;
                 default:
                     graphics.drawPoint(ctx, pixelLoc,
