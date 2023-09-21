@@ -1,107 +1,56 @@
 const constants = require('../common/constants.js');
-const featureFunctions = require('../common/featureFunctions.js');
 const utils = require('../common/utils.js');
+
+const KNN = require('../common/classifiers/knn.js');
 
 const fs = require('fs');
 
-console.log("EXTRACTING FEATURES ...");
+console.log("RUNNING CLASSIFICATION ...");
 
-const samples = JSON.parse(
-    fs.readFileSync(constants.SAMPLES)
+const { samples: trainingSamples } = JSON.parse(
+    fs.readFileSync(constants.TRAINING)
 );
 
-for (const sample of samples) {
-    const paths = JSON.parse(
-        fs.readFileSync(
-            constants.JSON_DIR + "/" + sample.id + ".json"
-        )
-    );
-    const functions = featureFunctions.inUse.map(f => f.function);
-    sample.point = functions.map(f => f(paths));
+const kNN = new KNN(trainingSamples, 50);
+
+const { samples: testingSamples } = JSON.parse(
+    fs.readFileSync(constants.TESTING)
+);
+
+let totalCount = 0;
+let correctCount = 0;
+for (const sample of testingSamples) {
+    const { label: predictedLabel } = kNN.predict(sample.point);
+    correctCount += predictedLabel == sample.label
+    totalCount++;
 }
 
-const featureNames =
-    featureFunctions.inUse.map(f => f.name);
+console.log("ACCURACY: " +
+    correctCount + "/" + totalCount + " (" +
+    utils.formatPercent(correctCount / totalCount) +
+    ")"
+);
 
-console.log("GENERATING SPLITS ...");
+console.log("GENERATING DECISION BOUNDARY ...");
 
-const trainingAmount = samples.length * 0.5;
+const { createCanvas } = require('canvas');
+const canvas = createCanvas(100, 100);
+const ctx = canvas.getContext('2d');
 
-const training = [];
-const testing = [];
-for (let i = 0; i < samples.length; i++) {
-    if (i < trainingAmount) {
-        training.push(samples[i]);
-    } else {
-        testing.push(samples[i]);
+for (let x = 0; x < canvas.width; x++) {
+    for (let y = 0; y < canvas.height; y++) {
+        const point = [
+            x / canvas.width,
+            1 - y / canvas.height
+        ];
+        const { label } = kNN.predict(point);
+        const color = utils.styles[label].color;
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, 1, 1);
     }
 }
 
-const minMax = utils.normalizePoints(
-    training.map(s => s.point)
-);
-utils.normalizePoints(
-    testing.map(s => s.point), minMax
-);
-
-fs.writeFileSync(constants.FEATURES,
-    JSON.stringify({
-        featureNames,
-        samples: samples.map(s => {
-            return {
-                point: s.point,
-                label: s.label
-            };
-        })
-    })
-);
-
-fs.writeFileSync(constants.FEATURES_JS,
-    `const features=
-   ${JSON.stringify({ featureNames, samples })}
-   ;`
-);
-
-fs.writeFileSync(constants.TRAINING,
-    JSON.stringify({
-        featureNames,
-        samples: training.map(s => {
-            return {
-                point: s.point,
-                label: s.label
-            };
-        })
-    })
-);
-
-fs.writeFileSync(constants.TRAINING_JS,
-    `const training=
-   ${JSON.stringify({ featureNames, samples: training })}
-   ;`
-);
-
-fs.writeFileSync(constants.TESTING,
-    JSON.stringify({
-        featureNames,
-        samples: testing.map(s => {
-            return {
-                point: s.point,
-                label: s.label
-            };
-        })
-    })
-);
-
-fs.writeFileSync(constants.TESTING_JS,
-    `const testing=
-   ${JSON.stringify({ featureNames, samples: testing })}
-   ;`
-);
-
-fs.writeFileSync(constants.MIN_MAX_JS,
-    `const minMax=
-   ${JSON.stringify(minMax)}
-   ;`
-);
+const buffer = canvas.toBuffer("image/png");
+fs.writeFileSync(constants.DECISION_BOUNDARY, buffer);
 
 console.log("DONE!");
