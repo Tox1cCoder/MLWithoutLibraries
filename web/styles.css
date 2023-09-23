@@ -15,6 +15,7 @@ body {
    -moz-user-select: none;
    user-select: none;
 }
+
 #content {
    position: absolute;
    top: 50%;
@@ -22,6 +23,7 @@ body {
    transform: translate(-50%, -50%);
    text-align: center;
 }
+
 button {
    cursor: pointer;
    border-radius: 5px;
@@ -38,31 +40,37 @@ button {
    vertical-align: middle;
    transition: 200ms ease-in-out;
 }
+
 button:hover {
    /*background-color: mediumblue;*/
    /**style change*/
    background-color: #f80;
 }
+
 button:disabled,
 button:disabled:hover {
    background-color: gray;
    cursor: default;
 }
+
 .row {
    display: flex;
    align-items: center;
    /**style change*/
    background-color: #151515;
 }
+
 /**new style*/
 .row:nth-child(even) {
    background-color: #000;
 }
+
 .thumb {
    width: 100%;
    /**style change*/
    filter: invert(1);
 }
+
 .rowLabel {
    flex: 2 1 0;
    text-overflow: ellipsis;
@@ -73,6 +81,7 @@ button:disabled:hover {
    margin-left: 3rem;
    font-weight: bold;
 }
+
 .sampleContainer {
    flex: 1 1 0;
    text-align: center;
@@ -86,6 +95,7 @@ button:disabled:hover {
    border-radius: 5px;
    text-transform: capitalize;
 }
+
 .blur {
    /*filter: blur(5px);*/
    /**style change*/
@@ -110,6 +120,7 @@ input,
    vertical-align: middle;
    transition: 200ms ease-in-out;
 }
+
 #instructions {
    margin-right: 0.75rem;
 }
@@ -159,4 +170,8 @@ input,
 #statistics {
    font-size: 20px;
    padding: 20px;
+}
+
+.flagged {
+   background-color: red !important;
 }
