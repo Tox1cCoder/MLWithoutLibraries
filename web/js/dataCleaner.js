@@ -14,6 +14,6 @@ function toggleFlaggedSample(sample) {
 
     for (const id of flaggedSamples) {
         const el = document.getElementById("sample_" + id);
-        el.classList.add("flagged")
+        el.classList.add("flagged");
     }
 }
