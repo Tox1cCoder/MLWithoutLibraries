@@ -94,6 +94,7 @@ button:disabled:hover {
    outline: 2px solid #f60;
    border-radius: 5px;
    text-transform: capitalize;
+   max-width: 8%;
 }
 
 .blur {
@@ -174,4 +175,24 @@ input,
 
 .flagged {
    background-color: red !important;
+}
+
+.infoButton {
+   color: red;
+   cursor: pointer;
+}
+
+.infoButton:hover .tooltipText {
+   visibility: visible;
+}
+
+.tooltipText {
+   color: white;
+   background-color: red;
+   position: absolute;
+   visibility: hidden;
+   font-size: small;
+   border-radius: 6px;
+   padding: 6px;
+   font-weight: normal;
 }
