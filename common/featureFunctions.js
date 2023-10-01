@@ -1,3 +1,9 @@
+const { features } = require("process");
+
+if (typeof geometry === "undefined") {
+   geometry = require("./geometry.js");
+}
+
 const featureFunctions = {};
 
 featureFunctions.getPathCount = (paths) => {
@@ -25,11 +31,18 @@ featureFunctions.getHeight = (paths) => {
    return max - min;
 };
 
+featureFunctions.getElongation = (paths) => {
+   const points = paths.flat();
+   const { width, height } = geometry.minimumBoundingBox({ points });
+   return (Math.max(width, height + 1)) / (Math.min(width, height) + 1);
+};
+
 featureFunctions.inUse = [
    //{name:"Path Count",function:featureFunctions.getPathCount},
    //{name:"Point Count",function:featureFunctions.getPointCount},
    { name: "Width", function: featureFunctions.getWidth },
    { name: "Height", function: featureFunctions.getHeight },
+   { name: "Elongation", function: featureFunctions.getElongation }
 ];
 
 if (typeof module !== "undefined") {
