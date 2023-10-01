@@ -55,7 +55,7 @@ console.log("\n");
 
 fs.writeFileSync(constants.SAMPLES, JSON.stringify(samples));
 
-fs.mkdirSync(constants.JS_OBJECTS, {recursive: true});
+fs.mkdirSync(constants.JS_OBJECTS, { recursive: true });
 fs.writeFileSync(
    constants.SAMPLES_JS,
    "const samples = " + JSON.stringify(samples) + ";"
@@ -66,10 +66,11 @@ function generateImageFile(outFile, paths) {
 
    draw.paths(ctx, paths);
 
-   const {vertices} = geometry.minimumBoundingBox({
+   const { vertices, hull } = geometry.minimumBoundingBox({
       points: paths.flat()
    });
-   draw.path(ctx, vertices, "red");
+   draw.path(ctx, [...vertices, vertices[0]], "red");
+   draw.path(ctx, [...hull, hull[0]], "blue");
 
    const buffer = canvas.toBuffer("image/png");
    fs.writeFileSync(outFile, buffer);
