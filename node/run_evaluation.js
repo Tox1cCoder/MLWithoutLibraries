@@ -27,12 +27,12 @@ for (const sample of testingSamples) {
 
 console.log(
    "ACCURACY: " +
-      correctCount +
-      "/" +
-      totalCount +
-      " (" +
-      utils.formatPercent(correctCount / totalCount) +
-      ")"
+   correctCount +
+   "/" +
+   totalCount +
+   " (" +
+   utils.formatPercent(correctCount / totalCount) +
+   ")"
 );
 
 console.log("GENERATING DECISION BOUNDARY ...");
@@ -45,6 +45,7 @@ const ctx = canvas.getContext("2d");
 for (let x = 0; x < canvas.width; x++) {
    for (let y = 0; y < canvas.height; y++) {
       const point = [x / canvas.width, 1 - y / canvas.height];
+      point.push(0);
       const { label } = kNN.predict(point);
       const color = utils.styles[label].color;
       ctx.fillStyle = color;
