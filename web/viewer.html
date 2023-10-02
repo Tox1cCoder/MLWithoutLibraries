@@ -104,7 +104,7 @@
          transparency: 0.9,
          icon: "image",
          bg: new Image(),
-         hideSamples: true
+         //hideSamples: true
       };
       options.bg.src = constants.DECISION_BOUNDARY;
       graphics.generateImages(utils.styles);
@@ -112,7 +112,7 @@
       const chart = new Chart(
          chartContainer,
          testingSamples.filter(
-            (s) => (s.truth == "pencil")
+            (s) => (s.truth == "pencil" && s.label != "pencil")
          ),
          options,
          handleClick
