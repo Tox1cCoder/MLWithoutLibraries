@@ -32,21 +32,22 @@ fileNames.forEach((fn) => {
    const content = fs.readFileSync(constants.RAW_DIR + "/" + fn);
    const { session, student, drawings } = JSON.parse(content);
    for (let label in drawings) {
-      samples.push({
-         id,
-         label,
-         student_name: student,
-         student_id: session,
-      });
+      if (!utils.flaggedSamples.includes(id)) {
+         samples.push({
+            id,
+            label,
+            student_name: student,
+            student_id: session,
+         });
 
-      const paths = drawings[label];
-      fs.writeFileSync(
-         constants.JSON_DIR + "/" + id + ".json",
-         JSON.stringify(paths)
-      );
+         const paths = drawings[label];
+         fs.writeFileSync(
+            constants.JSON_DIR + "/" + id + ".json",
+            JSON.stringify(paths)
+         );
 
-      generateImageFile(constants.IMG_DIR + "/" + id + ".png", paths);
-
+         generateImageFile(constants.IMG_DIR + "/" + id + ".png", paths);
+      }
       utils.printProgress(id, fileNames.length * 8);
       id++;
    }
@@ -69,8 +70,13 @@ function generateImageFile(outFile, paths) {
    const { vertices, hull } = geometry.minimumBoundingBox({
       points: paths.flat()
    });
-   draw.path(ctx, [...vertices, vertices[0]], "red");
-   draw.path(ctx, [...hull, hull[0]], "blue");
+   const roundness = geometry.roundness(hull);
+
+   const R = 255 - Math.floor(roundness ** 5 * 255);
+   const G = 255 - 0;
+   const B = 255 - Math.floor((1 - roundness ** 5) * 255);
+   const color = `rgb(${R},${G},${B})`;
+   draw.path(ctx, [...hull, hull[0]], color, 10);
 
    const buffer = canvas.toBuffer("image/png");
    fs.writeFileSync(outFile, buffer);
