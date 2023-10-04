@@ -2,6 +2,10 @@ if (typeof geometry === "undefined") {
    geometry = require("./geometry.js");
 }
 
+if (typeof draw === "undefined") {
+   draw = require("./draw.js");
+}
+
 const featureFunctions = {};
 
 featureFunctions.getPathCount = (paths) => {
@@ -41,6 +45,28 @@ featureFunctions.getRoundness = (paths) => {
    const { hull } = geometry.minimumBoundingBox({ points });
    return geometry.roundness(hull);
 };
+
+featureFunctions.getPixels = (paths, size=400) => {
+   let canvas = null;
+   
+   try {
+      // for web
+      canvas = document.createElement("canvas");
+      canvas.width= size;
+      canvas.height=size;
+   } catch ( err) {
+      // for node
+      const { createCanvas} = require("../node/node_modules/canvas");
+      canvas = createCanvas(size, size);
+   }
+
+   const ctx = canvas.getContext("2d");
+
+   draws.paths(ctx, paths);
+
+   const imgData = crx.getImageData(0, 0, size, size);
+   return imgData.data.filter((val, index) => index % 4 == 3);
+}
 
 featureFunctions.inUse = [
    //{name:"Path Count",function:featureFunctions.getPathCount},
