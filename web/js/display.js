@@ -16,8 +16,7 @@ function createRow(container, studentName, samples) {
       sampleContainer.onclick = (evt) => {
          if (evt.ctrlKey) {
             toggleFlaggedSample(sample);
-         }
-         else {
+         } else {
             handleClick(sample, false);
          }
       }

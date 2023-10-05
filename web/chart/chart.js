@@ -9,12 +9,12 @@ class Chart {
       this.icon = options.icon;
       this.hideSamples = options.hideSamples;
       this.bg = options.bg;
-      
+
       if (this.bg) {
          this.bg.onload = () => this.#draw();
          this.bg.onerror = () => (this.bg = null);
       }
-      
+
       Object.values(this.styles).forEach(
          (s) => (s.image.onload = () => this.#draw())
       );
