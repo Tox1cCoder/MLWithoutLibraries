@@ -46,27 +46,32 @@ featureFunctions.getRoundness = (paths) => {
    return geometry.roundness(hull);
 };
 
-featureFunctions.getPixels = (paths, size=400) => {
+featureFunctions.getPixels = (paths, size = 400) => {
    let canvas = null;
-   
+
    try {
       // for web
       canvas = document.createElement("canvas");
-      canvas.width= size;
-      canvas.height=size;
-   } catch ( err) {
+      canvas.width = size;
+      canvas.height = size;
+   } catch (err) {
       // for node
-      const { createCanvas} = require("../node/node_modules/canvas");
+      const { createCanvas } = require("../node/node_modules/canvas");
       canvas = createCanvas(size, size);
    }
 
    const ctx = canvas.getContext("2d");
 
-   draws.paths(ctx, paths);
+   draw.paths(ctx, paths);
 
-   const imgData = crx.getImageData(0, 0, size, size);
+   const imgData = ctx.getImageData(0, 0, size, size);
    return imgData.data.filter((val, index) => index % 4 == 3);
-}
+};
+
+featureFunctions.getComplexity = (paths) => {
+   const pixels = featureFunctions.getPixels(paths);
+   return pixels.filter((a) => a != 0).length;
+};
 
 featureFunctions.inUse = [
    //{name:"Path Count",function:featureFunctions.getPathCount},
@@ -75,6 +80,7 @@ featureFunctions.inUse = [
    { name: "Height", function: featureFunctions.getHeight },
    { name: "Elongation", function: featureFunctions.getElongation },
    { name: "Roundness", function: featureFunctions.getRoundness },
+   { name: "Complexity", function: featureFunctions.getComplexity }
 ];
 
 if (typeof module !== "undefined") {
