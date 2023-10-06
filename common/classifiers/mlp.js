@@ -23,5 +23,5 @@ class KNN {
 }
 
 if (typeof module !== "undefined") {
-    module.exports = KNN;
+    module.exports = KNN
 }
