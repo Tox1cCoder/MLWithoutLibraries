@@ -1,27 +1,53 @@
 if (typeof utils === "undefined") {
     utils = require("../utils.js");
 }
+if (typeof NeuralNetwork === "undefined") {
+    NeuralNetwork = require("../network.js");
+}
 
-class KNN {
-    constructor(samples, k = 50) {
-        this.samples = samples;
-        this.k = k;
+class MLP {
+    constructor(neuronCounts, classes) {
+        this.neuronCounts = neuronCounts;
+        this.classes = classes;
+        this.network = new NeuralNetwork(neuronCounts);
+    }
+    load(mlp) {
+        this.neuronCounts = mlp.neuronCounts;
+        this.classes = mlp.classes;
+        this.network = mlp.network;
     }
     predict(point) {
-        const samplePoints = this.samples.map((s) => s.point);
-        const indices = utils.getNearest(point, samplePoints, this.k);
-        const nearestSamples = indices.map((i) => this.samples[i]);
-        const labels = nearestSamples.map((s) => s.label);
-        const counts = {};
-        for (const label of labels) {
-            counts[label] = counts[label] ? counts[label] + 1 : 1;
+        const output = NeuralNetwork.feedForward(point, this.network);
+        const max = Math.max(...output);
+        const index = output.indexOf(max);
+        const label = this.classes[index];
+        return { label };
+    }
+    fit(samples, tries = 1000) {
+        let bestNetwork = this.network;
+        let bestAccuracy = this.evaluate(samples);
+        for (let i = 0; i < tries; i++) {
+            this.network = new NeuralNetwork(this.neuronCounts);
+            const accuracy = this.evaluate(samples);
+            if (accuracy > bestAccuracy) {
+                bestAccuracy = accuracy;
+                bestNetwork = this.network;
+            }
         }
-        const max = Math.max(...Object.values(counts));
-        const label = labels.find((l) => counts[l] == max);
-        return { label, nearestSamples };
+        this.network = bestNetwork;
+    }
+    evaluate(samples) {
+        let correctCount = 0;
+        for (const sample of samples) {
+            const { label } = this.predict(sample.point);
+            const truth = sample.label;
+            correctCount += truth == label ? 1 : 0;
+        }
+        const accuracy = correctCount / samples.length;
+        return accuracy;
     }
 }
 
 if (typeof module !== "undefined") {
-    module.exports = KNN
+    module.exports = MLP;
 }
